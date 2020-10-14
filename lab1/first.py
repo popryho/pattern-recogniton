@@ -42,8 +42,13 @@ def digit_recognition(standards, digit, noise) -> str:
 
         for i in range(len(digit)):
             for j in range(len(digit[0])):
-                res += xor(digit[i][j], standards[str(k)][i][j]) * log(noise) + \
-                        xor(xor(1, digit[i][j]), standards[str(k)][i][j]) * log(1 - noise)
+                if noise != 1 and noise != 0:
+                    res += xor(digit[i][j], standards[str(k)][i][j]) * log(noise) +\
+                            xor(xor(1, digit[i][j]), standards[str(k)][i][j]) * log(1 - noise)
+                elif noise == 1:
+                    res += xor(digit[i][j], standards[str(k)][i][j])
+                elif noise == 0:
+                    res += xor(xor(1, digit[i][j]), standards[str(k)][i][j])
 
         mses[str(k)] = res
     print(mses)
