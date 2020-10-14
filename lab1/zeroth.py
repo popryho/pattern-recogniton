@@ -38,3 +38,28 @@ def calc(data) -> int:
         return operands[0] * operands[1]
     else:
         print("Exception")
+
+async def zeroth():
+    uri = "wss://sprs.herokuapp.com/zeroth/popryho"
+    async with websockets.connect(uri) as websocket:
+
+        start = json.dumps({"data": {"message": "Let's start"}})
+
+        await websocket.send(start)
+        print(f"> {start}")
+
+        received = await websocket.recv()
+        print(f"< {received}")
+
+        result = calc(json.loads(received)["data"])
+
+        await websocket.send(json.dumps({"data": {"answer": result}}))
+        print(f"> {result}")
+
+        response = await websocket.recv()
+        print(f"< {response}")
+
+
+# doctest.testmod()
+asyncio.get_event_loop().run_until_complete(zeroth())
+asyncio.get_event_loop().run_forever()
