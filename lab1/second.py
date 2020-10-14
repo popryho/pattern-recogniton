@@ -73,3 +73,16 @@ def solver(heatmap) -> int:
             solutions = await websocket.recv()
             print(f"< {solutions}", "-" * 100, sep='\n')
        
+#  ----------------------------------------------------------
+        # send a farewell message to get the number of successes in solving problems
+        bye = json.dumps({"data": {"message": "Bye"}})
+
+        await websocket.send(bye)
+        print(f"> {bye}")
+
+        loss = await websocket.recv()
+        print(f"< {loss}", "-" * 100, sep='\n')
+
+doctest.testmod()
+# asyncio.get_event_loop().run_until_complete(second())
+# asyncio.get_event_loop().run_forever()
