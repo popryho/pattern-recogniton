@@ -34,11 +34,12 @@ def solver(heatmap) -> int:
     uri = "wss://sprs.herokuapp.com/second/popryho"
     async with websockets.connect(uri) as websocket:
         #  ----------------------------------------------------------
-        width = 5
+        width = 10
         totalSteps = 3
+        repeats=7
 
         settings = json.dumps(
-            {"data": {"width": width, "loss": "L1", "totalSteps": totalSteps, "repeats": 5}}
+            {"data": {"width": width, "loss": "L1", "totalSteps": totalSteps, "repeats": repeats}}
         )
 
         await websocket.send(settings)
@@ -63,7 +64,7 @@ def solver(heatmap) -> int:
             a = json.loads(problem)["data"]["heatmap"]
             guesses = json.dumps(
                 {"data": {"step": i,
-                          "guesses": [solver(a)]*width}
+                          "guesses": [solver(a)]*repeats}
                  }
             )
 
