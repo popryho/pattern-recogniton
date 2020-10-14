@@ -29,3 +29,47 @@ def solver(heatmap) -> int:
         res += heatmap[i]
         if res >= s/2:
             return i
+
+ async def second():
+    uri = "wss://sprs.herokuapp.com/second/popryho"
+    async with websockets.connect(uri) as websocket:
+        #  ----------------------------------------------------------
+        width = 5
+        totalSteps = 3
+
+        settings = json.dumps(
+            {"data": {"width": width, "loss": "L1", "totalSteps": totalSteps, "repeats": 5}}
+        )
+
+        await websocket.send(settings)
+        print(f"> {settings}")
+
+        ruready = await websocket.recv()
+        print(f"< {ruready}", "-" * 100, sep='\n')
+
+        #  ----------------------------------------------------------
+        for i in range(1, totalSteps+1):
+            ready = json.dumps(
+                {"data": {"message": "Ready"}}
+            )
+
+            await websocket.send(ready)
+            print(f"> {ready}")
+
+            problem = await websocket.recv()
+            print(f"< {problem}")
+
+            #  ----------------------------------------------------------
+            a = json.loads(problem)["data"]["heatmap"]
+            guesses = json.dumps(
+                {"data": {"step": i,
+                          "guesses": [solver(a)]*width}
+                 }
+            )
+
+            await websocket.send(guesses)
+            print(f"> {guesses}")
+
+            solutions = await websocket.recv()
+            print(f"< {solutions}", "-" * 100, sep='\n')
+       
