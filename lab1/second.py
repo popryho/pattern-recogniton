@@ -37,6 +37,11 @@ def solver(heatmap) -> int:
         width = 10
         totalSteps = 3
         repeats=7
+        
+        assert 2<=width<=1000
+        assert 1<=totalSteps<=1000000
+        assert 1<=repeats<=1000
+       
 
         settings = json.dumps(
             {"data": {"width": width, "loss": "L1", "totalSteps": totalSteps, "repeats": repeats}}
