@@ -49,3 +49,76 @@ def digit_recognition(standards, digit, noise) -> str:
     print(mses)
 
     return max(mses, key=mses.get)
+async def first():
+    uri = "wss://sprs.herokuapp.com/first/popryho"
+    async with websockets.connect(uri) as websocket:
+        #  ----------------------------------------------------------
+        # send initial message to receive parameters
+        start = json.dumps({"data": {"message": "Let's start"}})
+
+        await websocket.send(start)
+        print(f"> {start}")
+
+        parameters = await websocket.recv()
+        print(f"< {parameters}", "-" * 100, sep='\n')
+
+        #  ----------------------------------------------------------
+        # send settings to receive standard numbers
+        totalSteps = 10
+        noise = 0.4
+        settings = json.dumps({"data":
+                                   {"width": 20,
+                                    "height": 20,
+                                    "totalSteps": totalSteps,
+                                    "noise": noise,
+                                    "shuffle": False}
+                               })
+
+        await websocket.send(settings)
+        print(f"> {settings}")
+
+        standards = await websocket.recv()
+        print(f"< {standards}", "-" * 100, sep='\n')
+
+        #  ----------------------------------------------------------
+        # solve problems
+        for i in range(totalSteps):
+            # send ready msg to rcv a digit
+            ready_msg = json.dumps({"data": {"message": "Ready"}})
+
+            await websocket.send(ready_msg)
+            print(f"> {ready_msg}")
+
+            digit = await websocket.recv()
+            print(f"< {digit}", "-" * 100, sep='\n')
+
+            # search the closest digit
+            answer = digit_recognition(standards=json.loads(standards)["data"],
+                                       digit=json.loads(digit)["data"]["matrix"],
+                                       noise=noise)
+
+            # send solution to receive the result
+            solution = json.dumps(
+                {"data": {"step": i + 1, "answer": answer}}
+            )
+
+            await websocket.send(solution)
+            print(f"> {solution}")
+
+            result = await websocket.recv()
+            print(f"< {result}", "-" * 100, sep='\n')
+
+        #  ----------------------------------------------------------
+        # send a farewell message to get the number of successes in solving problems
+        bye = json.dumps({"data": {"message": "Bye"}})
+
+        await websocket.send(bye)
+        print(f"> {bye}")
+
+        successes = await websocket.recv()
+        print(f"< {successes}", "-" * 100, sep='\n')
+
+
+# doctest.testmod()
+asyncio.get_event_loop().run_until_complete(first())
+asyncio.get_event_loop().run_forever()
