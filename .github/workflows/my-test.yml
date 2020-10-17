@@ -37,4 +37,5 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pytest
+          cat lab1/zeroth.py
+          pytest lab1/zeroth.py
