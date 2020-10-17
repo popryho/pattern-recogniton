@@ -1,0 +1,17 @@
+# This is a basic workflow
+name: CI
+
+on:
+  push:
+    branches: 
+    - main
+
+jobs:
+  
+  my-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a multi-line script
+        run: |
+          echo Hello, world!,
+          echo Leon is here.
