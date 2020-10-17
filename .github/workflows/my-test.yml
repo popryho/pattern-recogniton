@@ -19,4 +19,4 @@ jobs:
       - name: GitHub Action for pytest
         uses: cclauss/GitHub-Action-for-pytest@master
         with:
-          args: pytest -h
+          args: pytest lab1/zeroth.py lab1/first.py lab1/second.py
