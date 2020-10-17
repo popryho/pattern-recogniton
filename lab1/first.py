@@ -138,8 +138,5 @@ async def first():
         successes = await websocket.recv()
         print(f"< {successes}", "-" * 100, sep='\n')
 
-
-asyncio.get_event_loop().run_until_complete(first())
-
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(first())

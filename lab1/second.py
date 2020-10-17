@@ -90,7 +90,5 @@ async def second():
         print(f"< {loss}", "-" * 100, sep='\n')
 
 
-asyncio.get_event_loop().run_until_complete(second())
-
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(first())

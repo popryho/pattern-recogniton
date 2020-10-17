@@ -54,7 +54,5 @@ async def zeroth():
         print(f"< {response}")
 
 
-asyncio.get_event_loop().run_until_complete(zeroth())
-
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(first())
