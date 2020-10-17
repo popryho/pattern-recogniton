@@ -1,6 +1,6 @@
-# pattern-recogniton
+# pattern-recognition
 
-Status of Last Deployement:<br>
+Status of Last Deployment:<br>
 <img src="https://github.com/popryho/pattern-recogniton/workflows/CI/badge.svg?branch=main"><br>
 
 Pattern recognition labs. Tasks are here:
