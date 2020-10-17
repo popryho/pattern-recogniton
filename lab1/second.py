@@ -1,7 +1,6 @@
 import asyncio
 import websockets
 import json
-import doctest
 
 
 # Смысл задачи: На одномерной оси находятся люди.
@@ -19,16 +18,17 @@ import doctest
 # guesses - масив ячеек, в которые сбрасываем необходимую помощь
 
 def solver(heatmap) -> int:
-    """
-    >>> solver([34,138,69,1,1])
-    1
-    """
+
     res = 0
     s = sum(heatmap)
     for i in range(len(heatmap)):
         res += heatmap[i]
-        if res >= s/2:
+        if res >= s / 2:
             return i
+
+
+def test_solver():
+    assert(solver([34, 138, 69, 1, 1])) == 1
 
 
 async def second():
@@ -37,12 +37,11 @@ async def second():
         #  ----------------------------------------------------------
         width = 10
         totalSteps = 3
-        repeats=7
-        
-        assert 2<=width<=1000
-        assert 1<=totalSteps<=1000000
-        assert 1<=repeats<=1000
-       
+        repeats = 7
+
+        assert 2 <= width <= 1000
+        assert 1 <= totalSteps <= 1000000
+        assert 1 <= repeats <= 1000
 
         settings = json.dumps(
             {"data": {"width": width, "loss": "L1", "totalSteps": totalSteps, "repeats": repeats}}
@@ -55,7 +54,7 @@ async def second():
         print(f"< {ruready}", "-" * 100, sep='\n')
 
         #  ----------------------------------------------------------
-        for i in range(1, totalSteps+1):
+        for i in range(1, totalSteps + 1):
             ready = json.dumps(
                 {"data": {"message": "Ready"}}
             )
@@ -70,7 +69,7 @@ async def second():
             a = json.loads(problem)["data"]["heatmap"]
             guesses = json.dumps(
                 {"data": {"step": i,
-                          "guesses": [solver(a)]*repeats}
+                          "guesses": [solver(a)] * repeats}
                  }
             )
 
@@ -79,8 +78,8 @@ async def second():
 
             solutions = await websocket.recv()
             print(f"< {solutions}", "-" * 100, sep='\n')
-       
-#  ----------------------------------------------------------
+
+        #  ----------------------------------------------------------
         # send a farewell message to get the number of successes in solving problems
         bye = json.dumps({"data": {"message": "Bye"}})
 
@@ -90,6 +89,5 @@ async def second():
         loss = await websocket.recv()
         print(f"< {loss}", "-" * 100, sep='\n')
 
-# doctest.testmod()
+
 asyncio.get_event_loop().run_until_complete(second())
-asyncio.get_event_loop().run_forever()

@@ -1,24 +1,13 @@
 import asyncio
 import websockets
 import json
-import doctest
 
 
 def calc(data) -> int:
-
     """
     # Function to do some calculation
     # :param data: dict with operands and operator
     # :return: result of operator action on operands
-
-    >>> calc({ "operands": [100, 100], "operator": "*" })
-    10000
-    >>> calc({'operands' : [10, -100],'operator' : "+"})
-    Traceback (most recent call last):
-        ...
-    AssertionError
-    >>> calc({'operands' : [1, 1],'operator' : "-"})
-    0
     """
 
     operands = data["operands"]
@@ -39,10 +28,15 @@ def calc(data) -> int:
     else:
         print("Exception")
 
+
+def test_calc():
+    assert calc({"operands": [100, 100], "operator": "*"}) == 10000
+    assert calc({'operands': [1, 1], 'operator': "-"}) == 0
+
+
 async def zeroth():
     uri = "wss://sprs.herokuapp.com/zeroth/popryho"
     async with websockets.connect(uri) as websocket:
-
         start = json.dumps({"data": {"message": "Let's start"}})
 
         await websocket.send(start)
@@ -60,6 +54,4 @@ async def zeroth():
         print(f"< {response}")
 
 
-# doctest.testmod()
 asyncio.get_event_loop().run_until_complete(zeroth())
-asyncio.get_event_loop().run_forever()
