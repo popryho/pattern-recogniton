@@ -16,3 +16,7 @@ jobs:
       
       - name: List current folder
         run: ls -la
+      - name: GitHub Action for pytest
+          uses: cclauss/GitHub-Action-for-pytest@master
+          with:
+            args: pytest -h
