@@ -11,6 +11,12 @@ jobs:
   my-testing:
     runs-on: ubuntu-latest
     steps:
+      
+      - uses: actions/checkout@v1
+      
+      - name: List current folder
+        run: ls -la
+        
       - name: Run a multi-line script
         run: |
           echo Hello, world!,
