@@ -53,9 +53,10 @@ def test_digit_recognition():
                     "8": [[1, 1, 1], [1, 0, 1], [1, 1, 1], [1, 0, 1], [1, 1, 1]],
                     "9": [[1, 1, 1], [1, 0, 1], [1, 1, 1], [0, 0, 1], [0, 0, 1]]
                 }
-    digit = [[0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0]],
+    digit = [[0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0]]
     noise = 0.4
-    assert(digit_recognition(standards=standards, digit=digit, noise=noise)) == 1
+
+    assert(digit_recognition(standards=standards, digit=digit, noise=noise)) == '1'
 
 
 async def first():
