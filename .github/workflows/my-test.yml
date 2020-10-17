@@ -16,8 +16,3 @@ jobs:
       
       - name: List current folder
         run: ls -la
-        
-      - name: Run a multi-line script
-        run: |
-          echo Hello, world!,
-          echo Leon is here.
