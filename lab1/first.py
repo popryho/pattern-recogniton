@@ -69,14 +69,25 @@ async def first():
 
         #  ----------------------------------------------------------
         # send settings to receive standard numbers
+        width = 20
+        height = 20
         totalSteps = 10
         noise = 0.4
+        shuffle = False
+        
+        assert 1<=width<=100
+        assert 1<=height<=100
+        assert 0<=noise<=1
+        assert 1<=totalSteps<=1000000
+        assert type(shuffle) == bool
+        
+        
         settings = json.dumps({"data":
-                                   {"width": 20,
-                                    "height": 20,
+                                   {"width": width,
+                                    "height": height,
                                     "totalSteps": totalSteps,
                                     "noise": noise,
-                                    "shuffle": False}
+                                    "shuffle": shuffle}
                                })
 
         await websocket.send(settings)
