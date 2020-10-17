@@ -140,3 +140,6 @@ async def first():
 
 
 asyncio.get_event_loop().run_until_complete(first())
+
+if __name__ == "__main__":
+    asyncio.get_event_loop().run_until_complete(first())
