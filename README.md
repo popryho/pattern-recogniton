@@ -1,7 +1,7 @@
 # pattern-recogniton
 
 Status of Last Deployement:<br>
-<img src="htttps://github.com/popryho/pattern-recogniton/workflows/CI/badge.svg?branch=main"><br>
+<img src="https://github.com/popryho/pattern-recogniton/workflows/CI/badge.svg?branch=main"><br>
 
 Pattern recognition labs. Tasks are here:
 
