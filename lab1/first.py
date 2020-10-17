@@ -43,8 +43,8 @@ def digit_recognition(standards, digit, noise) -> str:
         for i in range(len(digit)):
             for j in range(len(digit[0])):
                 if noise != 1 and noise != 0:
-                    res += xor(digit[i][j], standards[str(k)][i][j]) * log(noise) +\
-                            xor(xor(1, digit[i][j]), standards[str(k)][i][j]) * log(1 - noise)
+                    res += xor(digit[i][j], standards[str(k)][i][j]) * log(noise) + \
+                           xor(xor(1, digit[i][j]), standards[str(k)][i][j]) * log(1 - noise)
                 elif noise == 1:
                     res += xor(digit[i][j], standards[str(k)][i][j])
                 elif noise == 0:
@@ -54,6 +54,8 @@ def digit_recognition(standards, digit, noise) -> str:
     print(mses)
 
     return max(mses, key=mses.get)
+
+
 async def first():
     uri = "wss://sprs.herokuapp.com/first/popryho"
     async with websockets.connect(uri) as websocket:
@@ -74,14 +76,13 @@ async def first():
         totalSteps = 10
         noise = 0.4
         shuffle = False
-        
-        assert 1<=width<=100
-        assert 1<=height<=100
-        assert 0<=noise<=1
-        assert 1<=totalSteps<=1000000
+
+        assert 1 <= width <= 100
+        assert 1 <= height <= 100
+        assert 0 <= noise <= 1
+        assert 1 <= totalSteps <= 1000000
         assert type(shuffle) == bool
-        
-        
+
         settings = json.dumps({"data":
                                    {"width": width,
                                     "height": height,

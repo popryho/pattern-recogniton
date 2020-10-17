@@ -30,7 +30,8 @@ def solver(heatmap) -> int:
         if res >= s/2:
             return i
 
- async def second():
+
+async def second():
     uri = "wss://sprs.herokuapp.com/second/popryho"
     async with websockets.connect(uri) as websocket:
         #  ----------------------------------------------------------
@@ -89,6 +90,6 @@ def solver(heatmap) -> int:
         loss = await websocket.recv()
         print(f"< {loss}", "-" * 100, sep='\n')
 
-doctest.testmod()
-# asyncio.get_event_loop().run_until_complete(second())
-# asyncio.get_event_loop().run_forever()
+# doctest.testmod()
+asyncio.get_event_loop().run_until_complete(second())
+asyncio.get_event_loop().run_forever()
