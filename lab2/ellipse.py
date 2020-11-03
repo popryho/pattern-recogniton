@@ -41,7 +41,7 @@ def plot_decision_regions(X, y, h=0.01):
 
 class Perceptron(object):
 
-    def __init__(self, n_epochs=20):
+    def __init__(self, n_epochs=5):
         self.errors_ = []
         self.n_epochs = n_epochs
         self.w_ = 0
@@ -50,11 +50,11 @@ class Perceptron(object):
         self.w_ = np.zeros(X.shape[1])
 
         # added [1, 0, ... , 0] ksi vector to train dataset
-        # ksi = np.zeros((1, X.shape[1]))
-        # ksi[0][0] = 1
+        ksi = np.zeros((1, X.shape[1]))
+        ksi[0][0] = 1
 
-        # X = np.concatenate((X, ksi, ksi), axis=0)
-        # y = np.concatenate((y, np.ones(2)), axis=0)
+        X = np.concatenate((X, ksi), axis=0)
+        y = np.concatenate((y, np.ones(1)), axis=0)
 
         for _ in range(self.n_epochs):
             errors = 0
@@ -90,10 +90,10 @@ class Perceptron(object):
         return self
 
     def predict(self, xi):
-        return np.where(np.dot(xi, self.w_) >= 0.0, 1, 0)
+        return np.where(np.dot(xi, self.w_) > 0.0, 1, 0)
 
 
-def sample_generator(bias, n=50):
+def sample_generator(bias, n=5):
     """
     Sample_generator generate sample from multivariate normal distribution
     with given params
@@ -117,10 +117,11 @@ def data_preprocessor(x, label):
     """
     n = len(x)
 
+    norm = np.linalg.norm(x, axis=1).reshape(-1, 1)**2
     bias = np.ones(shape=(n, 1))
     target = label * np.ones(shape=(n, 1))
 
-    return np.concatenate((x, bias, target), axis=1)
+    return np.concatenate((norm, x, bias, target), axis=1)
 
 
 if __name__ == '__main__':
@@ -137,13 +138,6 @@ if __name__ == '__main__':
     df = np.concatenate((df1, df2), axis=0)
 
     # ------------------------------------------------------------------------------------
-    # added norm vector to train data
-    data = np.concatenate(
-        (np.linalg.norm(df[:, :2], axis=1).reshape(-1, 1)**2,
-         df[:, :-1], df[:, -1].reshape(-1, 1)), axis=1
-    )
-
-    # ------------------------------------------------------------------------------------
     # visualize generated set of data
     fig, ax = plt.subplots()
     for *cls, c, m in zip([x1, x2], [0, 1], ['blue', 'red'], ['D', 'o']):
@@ -158,7 +152,7 @@ if __name__ == '__main__':
     # ------------------------------------------------------------------------------------
     # train test split
     X_train, X_test, y_train, y_test = train_test_split(
-        data[:, :-1], data[:, -1], test_size=0.1, random_state=42, shuffle=True, stratify=data[:, -1]
+        df[:, :-1], df[:, -1], test_size=0.1, random_state=42, shuffle=True, stratify=df[:, -1]
     )
 
     # algorithm training
