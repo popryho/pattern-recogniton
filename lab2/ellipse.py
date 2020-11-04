@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from sklearn.model_selection import train_test_split
@@ -8,21 +9,15 @@ def plot_decision_regions(X, y, h=0.01):
     """
     A function for plotting decision regions of classifiers 2 dimensions.
     """
-    x1_min, x1_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-    x2_min, x2_max = X[:, 2].min() - 1, X[:, 2].max() + 1
+    x1_min, x1_max = X[:, -3].min() - 1, X[:, -3].max() + 1
+    x2_min, x2_max = X[:, -2].min() - 1, X[:, -2].max() + 1
 
     xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, h),
                            np.arange(x2_min, x2_max, h))
 
-    norm = np.linalg.norm(
-        np.concatenate((xx1.ravel().reshape(-1, 1), xx2.ravel().reshape(-1, 1)), axis=1),
-        axis=1
-    )
-
-    Z = ppn.predict(
-        np.array([norm**2, xx1.ravel(), xx2.ravel(), np.ones_like(xx1.ravel())]).T
-    )
-
+    Z = ppn.predict(np.array(data_preprocessor(
+        np.concatenate((xx1.ravel().reshape(-1, 1), xx2.ravel().reshape(-1, 1)), axis=1)
+    )))
     Z = Z.reshape(xx1.shape)
 
     plt.contourf(xx1, xx2, Z, alpha=0.5, cmap=ListedColormap(['red', 'blue']))
@@ -31,8 +26,8 @@ def plot_decision_regions(X, y, h=0.01):
     plt.ylim(xx2.min(), xx2.max())
 
     for idx, cl in enumerate(np.unique(y)):
-        plt.scatter(X[:, 1:3][y == cl, 0],
-                    X[:, 1:3][y == cl, 1],
+        plt.scatter(X[:, -3:-1][y == cl, 0],
+                    X[:, -3:-1][y == cl, 1],
                     alpha=0.8, color=ListedColormap(['red', 'blue'])(idx),
                     marker=['o', 'x'][idx], label=cl)
     plt.legend(loc='best')
@@ -49,17 +44,8 @@ class Perceptron(object):
     def fit(self, X, y):
         self.w_ = np.zeros(X.shape[1])
 
-        # added [1, 0, ... , 0] ksi vector to train dataset
-        ksi = np.zeros((1, X.shape[1]))
-        ksi[0][0] = 1
-
-        X = np.concatenate((X, ksi), axis=0)
-        y = np.concatenate((y, np.ones(1)), axis=0)
-
         for _ in range(self.n_epochs):
             errors = 0
-
-            # print(_, np.concatenate((X, y.reshape(-1, 1)), axis=1)[-2:, :], '\n')
             for xi, target in zip(X, y):
 
                 if self.predict(xi) == 1 and target == 0:
@@ -72,28 +58,14 @@ class Perceptron(object):
                 errors += 1 if self.predict(xi) != target else 0
             self.errors_.append(errors)
 
-            # if errors != 0:
-            #     print(errors)
-            #     # added [0, w1/4, ... , wn/4, -1]/w0 eta vector to train dataset
-            #     # assert self.w_[0] >= 0
-            #     eta = (np.copy(self.w_) / (4 * self.w_[0])).reshape(1, -1)
-            #     eta[0][0], eta[0][-1] = 0, -1
-            #
-            #     X = np.delete(X, (-1), axis=0)
-            #     y = np.delete(y, (-1), axis=0)
-            #
-            #     X = np.concatenate((X, eta), axis=0)
-            #     y = np.concatenate((y, np.ones(1)), axis=0)
-
             plot_decision_regions(X, y)
-
         return self
 
     def predict(self, xi):
         return np.where(np.dot(xi, self.w_) > 0.0, 1, 0)
 
 
-def sample_generator(bias, n=5):
+def sample_generator(bias, n=50):
     """
     Sample_generator generate sample from multivariate normal distribution
     with given params
@@ -108,20 +80,23 @@ def sample_generator(bias, n=5):
     return np.random.multivariate_normal(mean, cov, n)
 
 
-def data_preprocessor(x, label):
+def data_preprocessor(x, label=None):
     """
     Concatenate bias vector and labels to original x
     :param x: generated sample from multivariate normal distribution
     :param label: label(target) vector
     :return: merged data
     """
-    n = len(x)
+    n, m = x.shape
 
-    norm = np.linalg.norm(x, axis=1).reshape(-1, 1)**2
+    new_features = np.array([x[:, i]*x[:, j] for i in range(m) for j in range(m)]).T
     bias = np.ones(shape=(n, 1))
-    target = label * np.ones(shape=(n, 1))
 
-    return np.concatenate((norm, x, bias, target), axis=1)
+    if label is None:
+        return np.concatenate((new_features, x, bias), axis=1)
+    else:
+        target = label * np.ones(shape=(n, 1))
+        return np.concatenate((new_features, x, bias, target), axis=1)
 
 
 if __name__ == '__main__':
