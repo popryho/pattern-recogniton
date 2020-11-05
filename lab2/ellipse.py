@@ -35,7 +35,7 @@ def plot_decision_regions(X, y, h=0.1):
 
 class Perceptron(object):
 
-    def __init__(self, n_epochs=20):
+    def __init__(self, n_epochs=100):
         self.errors_ = []
         self.n_epochs = n_epochs
         self.w_ = 0
@@ -52,7 +52,7 @@ class Perceptron(object):
 
             # print(self.predict(X_modded[-1]))
 
-            for xi, target in zip(X, y):
+            for xi, target in zip(X_modded, y_modded):
 
                 if self.predict(xi) == 1 and target == 0:
                     self.w_ -= xi
@@ -70,6 +70,7 @@ class Perceptron(object):
     def predict(self, xi):
         return np.where(np.dot(xi, self.w_) > 0.0, 1, 0)
 
+
 def eigen_values_analyzer(weights):
     """
     Check that the first values of weights that form positive definite matrix have
@@ -79,7 +80,6 @@ def eigen_values_analyzer(weights):
     :return: additional vector if exists even one non-positive eigen-value, else return None
     """
     matrix = weights[:4].reshape((2, 2))
-    print(matrix)
     n = matrix.shape[0]
     eig_values, eig_vectors = np.linalg.eig(matrix)
 
@@ -101,6 +101,8 @@ def expected_value(weights):
     """
     return np.linalg.solve(a=weights[:4].reshape((2, 2)),
                            b=-0.5*weights[4:6])
+
+
 def sample_generator(bias, n=50):
     """
     Sample_generator generate sample from multivariate normal distribution
