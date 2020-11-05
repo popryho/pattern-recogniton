@@ -45,6 +45,12 @@ class Perceptron(object):
 
         for _ in range(self.n_epochs):
             errors = 0
+            
+            X_modded = np.concatenate((X, eigen_values_analyzer(self.w_).reshape(1, -1)), axis=0) \
+                if eigen_values_analyzer(self.w_) is not None and self.w_.all() != 0 else X
+            y_modded = np.concatenate((y, (1,)), axis=0)
+
+            # print(self.predict(X_modded[-1]))
 
             for xi, target in zip(X, y):
 
@@ -64,7 +70,37 @@ class Perceptron(object):
     def predict(self, xi):
         return np.where(np.dot(xi, self.w_) > 0.0, 1, 0)
 
+def eigen_values_analyzer(weights):
+    """
+    Check that the first values of weights that form positive definite matrix have
+    positive eigen values.  If exists even one non-positive eigen-value - function
+    return an additional vector
+    :param weights:
+    :return: additional vector if exists even one non-positive eigen-value, else return None
+    """
+    matrix = weights[:4].reshape((2, 2))
+    print(matrix)
+    n = matrix.shape[0]
+    eig_values, eig_vectors = np.linalg.eig(matrix)
 
+    for i in range(n):
+
+        if eig_values[i] <= 0:
+            eta = data_preprocessor(eig_vectors[i].reshape(1, -1))[0]
+            eta[-3:] = 0
+            # print(np.dot(weights, eta))
+            return eta
+    return None
+
+
+def expected_value(weights):
+    """
+    Function calculate the means vector.
+    :param weights: perceptron weights
+    :return: means vector
+    """
+    return np.linalg.solve(a=weights[:4].reshape((2, 2)),
+                           b=-0.5*weights[4:6])
 def sample_generator(bias, n=50):
     """
     Sample_generator generate sample from multivariate normal distribution
