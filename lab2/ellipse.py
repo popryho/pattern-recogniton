@@ -4,12 +4,12 @@ from matplotlib.colors import ListedColormap
 from sklearn.model_selection import train_test_split
 
 
-def plot_decision_regions(X, y, h=0.1):
+def plot_decision_regions(X, y, h=0.01):
     """
     A function for plotting decision regions of classifiers 2 dimensions.
     """
-    x1_min, x1_max = X[:, -3].min() - 10, X[:, -3].max() + 10
-    x2_min, x2_max = X[:, -2].min() - 10, X[:, -2].max() + 10
+    x1_min, x1_max = X[:, -3].min() - 1, X[:, -3].max() + 1
+    x2_min, x2_max = X[:, -2].min() - 1, X[:, -2].max() + 1
 
     xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, h),
                            np.arange(x2_min, x2_max, h))
@@ -35,7 +35,7 @@ def plot_decision_regions(X, y, h=0.1):
 
 class Perceptron(object):
 
-    def __init__(self, n_epochs=100):
+    def __init__(self, n_epochs=20):
         self.errors_ = []
         self.n_epochs = n_epochs
         self.w_ = 0
@@ -48,9 +48,7 @@ class Perceptron(object):
             
             X_modded = np.concatenate((X, eigen_values_analyzer(self.w_).reshape(1, -1)), axis=0) \
                 if eigen_values_analyzer(self.w_) is not None and self.w_.all() != 0 else X
-            y_modded = np.concatenate((y, (1,)), axis=0)
-
-            # print(self.predict(X_modded[-1]))
+            y_modded = np.concatenate((y, (1,)), axis=0) if X_modded.shape[0] != X.shape[0] else y
 
             for xi, target in zip(X_modded, y_modded):
 
@@ -64,7 +62,7 @@ class Perceptron(object):
                 errors += 1 if self.predict(xi) != target else 0
             self.errors_.append(errors)
 
-            # plot_decision_regions(X, y)
+            plot_decision_regions(X, y)
         return self
 
     def predict(self, xi):
@@ -140,8 +138,8 @@ def data_preprocessor(x, label=None):
 if __name__ == '__main__':
 
     # sample generating
-    x1 = sample_generator(bias=0, n=1000)
-    x2 = sample_generator(bias=10, n=1000)
+    x1 = sample_generator(bias=0, n=100)
+    x2 = sample_generator(bias=10, n=100)
 
     # added bias and label vector
     df1 = data_preprocessor(x1, 1)
