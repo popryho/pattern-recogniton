@@ -1,15 +1,15 @@
 import numpy as np
+import json
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
-from sklearn.model_selection import train_test_split
 
 
-def plot_decision_regions(X, y, h=0.1):
+def plot_decision_regions(X, y, h=0.01):
     """
     A function for plotting decision regions of classifiers 2 dimensions.
     """
-    x1_min, x1_max = X[:, -3].min() - 10, X[:, -3].max() + 10
-    x2_min, x2_max = X[:, -2].min() - 10, X[:, -2].max() + 10
+    x1_min, x1_max = X[:, -3].min() - 1, X[:, -3].max() + 1
+    x2_min, x2_max = X[:, -2].min() - 1, X[:, -2].max() + 1
 
     xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, h),
                            np.arange(x2_min, x2_max, h))
@@ -28,14 +28,14 @@ def plot_decision_regions(X, y, h=0.1):
         plt.scatter(X[:, -3:-1][y == cl, 0],
                     X[:, -3:-1][y == cl, 1],
                     alpha=0.8, color=ListedColormap(['red', 'blue'])(idx),
-                    marker=['o', 'x'][idx], label=cl)
+                    marker=['o', 'x'][idx], label="inside" if cl == 0 else "outside")
     plt.legend(loc='best')
     plt.show()
 
 
 class Perceptron(object):
 
-    def __init__(self, n_epochs=50000):
+    def __init__(self, n_epochs=100):
         self.errors_ = []
         self.n_epochs = n_epochs
         self.w_ = 0
@@ -60,16 +60,6 @@ class Perceptron(object):
                     errors += 1
                 else:
                     pass
-
-                # if self.w_.all() != 0:
-                #     self.w_ /= np.linalg.norm(self.w_)
-
-            # while eigen_values_analyzer(self.w_) is not None:
-            #
-            #     xi = eigen_values_analyzer(self.w_)
-            #     # self.w_ /= np.linalg.norm(self.w_)
-            #     self.w_ += xi
-            #     print(xi, self.w_)
 
             self.errors_.append(errors)
 
@@ -147,21 +137,23 @@ def data_preprocessor(x, label=None):
 
 if __name__ == '__main__':
 
-    # sample generating
-    x1 = sample_generator(bias=0, n=50)
-    x2 = sample_generator(bias=10, n=50)
+    with open('train_02.json') as json_file:
+        train = json.load(json_file)
+        x1_out = np.array(train['outside'])
+        x2_in = np.array(train['inside'])
 
     # added bias and label vector
-    df1 = data_preprocessor(x1, 1)
-    df2 = data_preprocessor(x2, 0)
+    df1_train = data_preprocessor(x1_out, 1)
+    df2_train = data_preprocessor(x2_in, 0)
 
-    # concatenate two different sample
-    df = np.concatenate((df1, df2), axis=0)
+    df_train = np.concatenate((df1_train, df2_train), axis=0)
+
+    X_train, y_train = df_train[:, :-1], df_train[:, -1]
 
     # ------------------------------------------------------------------------------------
     # visualize generated set of data
     fig, ax = plt.subplots()
-    for *cls, c, marker in zip([x1, x2], [0, 1], ['blue', 'red'], ['D', 'o']):
+    for *cls, c, marker in zip([x1_out, x2_in], [1, 0], ['blue', 'red'], ['D', 'o']):
         ax.scatter(cls[0][:, 0], cls[0][:, 1], c=c, s=100, label="class %d" % cls[1], marker=marker,
                    alpha=0.5)
 
@@ -171,11 +163,6 @@ if __name__ == '__main__':
     plt.show()
 
     # ------------------------------------------------------------------------------------
-    # train test split
-    X_train, X_test, y_train, y_test = train_test_split(
-        df[:, :-1], df[:, -1], test_size=0.1, random_state=42, shuffle=True, stratify=df[:, -1]
-    )
-
     # algorithm training
     ppn = Perceptron()
     ppn.fit(X_train, y_train)
@@ -190,4 +177,4 @@ if __name__ == '__main__':
 
     # ------------------------------------------------------------------------------------
     # visualize test set in decision region
-    plot_decision_regions(X_test, y_test)
+    plot_decision_regions(X_train, y_train)
