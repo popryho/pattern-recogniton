@@ -1,6 +1,7 @@
 import numpy as np
 from ..ellipse import data_preprocessor
 
+
 def test_data_preprocessor():
 
     for i in range(1, 6):
