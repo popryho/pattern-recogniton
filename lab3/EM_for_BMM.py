@@ -15,10 +15,21 @@ class BMM(object):
         self.X_ = empty(0)
         self.k_ = 0
         self.n_, self.m_ = 0, 0
+        
+    def e_step(self):
 
-        self.p_k = empty(self.k_)
-        self.p_k_x = empty((self.n_, self.k_))
-        self.p_x_k = empty((self.k_, self.m_))
+        for i in range(self.n_):
+            for k in range(self.k_):
+                self.p_k_x[i, k] = self.p_k[k]*prod(a=[self.p_x_k[k] ** self.X_[i],
+                                                       ((1 - self.p_x_k[k]) ** (1 - self.X_[i]))])
+                self.p_k_x /= self.p_k_x.sum(axis=1)[:, newaxis]
+
+    def m_step(self):
+
+        self.p_k = self.p_k_x.sum(axis=0) / self.n_
+        self.p_x_k = array([dot(self.X_.T, self.p_k_x).T[i] /
+                            self.p_k_x.sum(axis=0)[i] for i in range(self.k_)])   
+        
     def fit(self, X, n_clusters):
 
         self.X_ = X.to_numpy()
@@ -35,6 +46,9 @@ class BMM(object):
         for i in range(self.n_epochs_):
             self.m_step()
             self.e_step()
+            for image in range(self.k_):
+                show_image(self.p_x_k[image], i+image)
+                
 def data_preprocessor(df):
 
     labels, values = df.iloc[:, 0], df.iloc[:, 1:]
