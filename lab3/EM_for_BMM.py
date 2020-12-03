@@ -64,11 +64,12 @@ def show_image(vector, i):
 
 
 if __name__ == '__main__':
+    
+    X, y = DataFrame(mnist.train_images().reshape(60000, -1)), DataFrame(mnist.train_labels())
+    mnist_df = concat([y, X], axis=1)
+    mnist_df = mnist_df[mnist_df.iloc[:, 0].isin([0, 1])].reset_index(drop=True)
 
-    mnist = read_csv('data/mnist_train.csv')
-    mnist = mnist[mnist.iloc[:, 0].isin([0, 1])].reset_index(drop=True)
-
-    X, y = data_preprocessor(mnist)
+    X, y = data_preprocessor(mnist_df)
     k = unique(y).shape[0]
 
     bmm = BMM()
