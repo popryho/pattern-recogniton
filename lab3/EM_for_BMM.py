@@ -1,10 +1,11 @@
 # http://yann.lecun.com/exdb/mnist/
 
-from pandas import read_csv
+from pandas import DataFrame, concat
 from numpy import (
     unique, random, newaxis, dot, empty, prod, array, uint8
 )
 from PIL import Image
+import mnist
 
 
 class BMM(object):
