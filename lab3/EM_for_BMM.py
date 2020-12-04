@@ -10,7 +10,7 @@ import mnist
 
 class BMM(object):
 
-    def __init__(self, n_epochs=1):
+    def __init__(self, n_epochs=10):
 
         self.n_epochs_ = n_epochs
         self.X_ = empty(0)
@@ -27,7 +27,7 @@ class BMM(object):
             for k in range(self.k_):
                 self.p_k_x[i, k] = self.p_k[k]*prod(a=[self.p_x_k[k] ** self.X_[i],
                                                        ((1 - self.p_x_k[k]) ** (1 - self.X_[i]))])
-                self.p_k_x /= self.p_k_x.sum(axis=1)[:, newaxis]
+        self.p_k_x /= self.p_k_x.sum(axis=1)[:, newaxis]
 
     def m_step(self):
 
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     
     X, y = DataFrame(mnist.train_images().reshape(60000, -1)), DataFrame(mnist.train_labels())
     mnist_df = concat([y, X], axis=1)
-    mnist_df = mnist_df[mnist_df.iloc[:, 0].isin([0, 1])].reset_index(drop=True)
+    mnist_df = mnist_df[mnist_df.iloc[:, 0].isin([2, 3, 4])].reset_index(drop=True)
 
     X, y = data_preprocessor(mnist_df)
     k = unique(y).shape[0]
