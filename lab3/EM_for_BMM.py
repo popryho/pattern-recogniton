@@ -16,6 +16,10 @@ class BMM(object):
         self.X_ = empty(0)
         self.k_ = 0
         self.n_, self.m_ = 0, 0
+
+        self.p_k = empty(self.k_)
+        self.p_k_x = empty((self.n_, self.k_))
+        self.p_x_k = empty((self.k_, self.m_))
         
     def e_step(self):
 
@@ -37,10 +41,6 @@ class BMM(object):
         self.k_ = n_clusters
         self.n_, self.m_ = self.X_.shape
 
-        self.p_k = empty(self.k_)
-        self.p_k_x = empty((self.n_, self.k_))
-        self.p_x_k = empty((self.k_, self.m_))
-
         expert_values_p_k_x = random.rand(self.n_, self.k_)
         self.p_k_x = expert_values_p_k_x / expert_values_p_k_x.sum(axis=1)[:, newaxis]
 
@@ -49,7 +49,8 @@ class BMM(object):
             self.e_step()
             for image in range(self.k_):
                 show_image(self.p_x_k[image], i+image)
-                
+
+
 def data_preprocessor(df):
 
     labels, values = df.iloc[:, 0], df.iloc[:, 1:]
