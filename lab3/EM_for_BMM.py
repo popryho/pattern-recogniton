@@ -1,11 +1,11 @@
 # http://yann.lecun.com/exdb/mnist/
 
-from pandas import DataFrame, concat
+import mnist
+from PIL import Image
 from numpy import (
     unique, random, newaxis, dot, empty, prod, array, uint8
 )
-from PIL import Image
-import mnist
+from pandas import DataFrame, concat
 
 
 class BMM(object):
@@ -20,7 +20,7 @@ class BMM(object):
         self.p_k = empty(self.k_)
         self.p_k_x = empty((self.n_, self.k_))
         self.p_x_k = empty((self.k_, self.m_))
-        
+
     def e_step(self):
 
         for i in range(self.n_):
@@ -33,8 +33,8 @@ class BMM(object):
 
         self.p_k = self.p_k_x.sum(axis=0) / self.n_
         self.p_x_k = array([dot(self.X_.T, self.p_k_x).T[i] /
-                            self.p_k_x.sum(axis=0)[i] for i in range(self.k_)])   
-        
+                            self.p_k_x.sum(axis=0)[i] for i in range(self.k_)])
+
     def fit(self, X, n_clusters):
 
         self.X_ = X.to_numpy()
