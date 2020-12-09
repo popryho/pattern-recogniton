@@ -24,9 +24,9 @@ class BMM(object):
     def e_step(self):
 
         for i in range(self.n_):
-            for k in range(self.k_):
-                self.p_k_x[i, k] = self.p_k[k]*prod(a=[self.p_x_k[k] ** self.X_[i],
-                                                       ((1 - self.p_x_k[k]) ** (1 - self.X_[i]))])
+            for k_ in range(self.k_):
+                self.p_k_x[i, k_] = self.p_k[k_] * prod(a=[self.p_x_k[k_] ** self.X_[i],
+                                                           ((1 - self.p_x_k[k_]) ** (1 - self.X_[i]))])
         self.p_k_x /= self.p_k_x.sum(axis=1)[:, newaxis]
 
     def m_step(self):
@@ -35,9 +35,9 @@ class BMM(object):
         self.p_x_k = array([dot(self.X_.T, self.p_k_x).T[i] /
                             self.p_k_x.sum(axis=0)[i] for i in range(self.k_)])
 
-    def fit(self, X, n_clusters):
+    def fit(self, X_, n_clusters):
 
-        self.X_ = X.to_numpy()
+        self.X_ = X_.to_numpy()
         self.k_ = n_clusters
         self.n_, self.m_ = self.X_.shape
 
