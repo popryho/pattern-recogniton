@@ -35,3 +35,29 @@ def is_valid(board, i, j, e):
                         return False
             return True
     return False
+
+
+def solve_sudoku(board, i=0, j=0):
+    i, j = find_cell_to_fill(board)
+    if i == -1:
+        return True
+    for e in range(1, 10):
+        if is_valid(board, i, j, e):
+            board[i][j] = e
+            if solve_sudoku(board, i, j):
+                return True
+            board[i][j] = 0
+    return False
+
+
+if __name__ == '__main__':
+
+    with open('data/sudoku_02.json') as json_file:
+        sudoku = np.array(json.load(json_file))
+
+    print_board(sudoku)
+
+    if solve_sudoku(sudoku):
+        print_board(sudoku)
+    else:
+        print("markup not found")
