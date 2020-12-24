@@ -38,3 +38,4 @@ jobs:
           pytest lab1/second.py
           pytest -v lab2/tests/
           pytest -v lab3/test/
+          pytest -v lab4/tests/
