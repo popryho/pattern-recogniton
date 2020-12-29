@@ -2,20 +2,31 @@ import numpy as np
 import json
 
 
-def print_board(board):
-    print("    1 2 3     4 5 6     7 8 9")
-    for i in range(len(board)):
-        if i % 3 == 0:
-            print("  - - - - - - - - - - - - - - ")
+# TODO:
+#  - define the order of traversing objects and labels in objects
+#  - start with the first object
+#  - deep copy the current graph
+#  - select the first label in the selected object, make the rest of the labels unavailable
+#  - start enforcing arc consistency (deleting)
+#  - if everything is crossed out, then go back to the step of copying the graph and select the next label
+#  - if there is something left, then we fix this state of the graph and return to the second step,
+#  but to the next object
+#  - if we have sorted out all objects, then we have a solution
+#  - else solution is not found
 
+
+def print_board(board):
+
+    for i in range(len(board)):
+        line = ""
+        if i == 3 or i == 6:
+            print("---------------------")
         for j in range(len(board[i])):
-            if j % 3 == 0:
-                print(" |  ", end="")
-            if j == 8:
-                print(board[i][j], " | ", i + 1)
-            else:
-                print(f"{board[i][j]} ", end="")
-    print("  - - - - - - - - - - - - - - \n")
+            if j == 3 or j == 6:
+                line += "| "
+            line += str(board[i][j])+" "
+        print(line)
+    print("\n")
 
 
 def find_cell_to_fill(board):
