@@ -23,7 +23,7 @@ class Node:
         return self.data
 
     def getConnections(self):
-        return self.connectedTo.keys()
+        return list(self.connectedTo.keys())
 
     def getWeight(self, neighbour):
         return self.connectedTo[neighbour.id]
