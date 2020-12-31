@@ -5,7 +5,17 @@ import copy
 
 
 class SudokuBoard(object):
-
+    """
+     - start with the first object
+     - deep copy the current graph
+     - select the first label in the selected object, make the rest of the labels unavailable
+     - start enforcing arc consistency (deleting)
+     - if everything is crossed out, then go back to the step of copying the graph and select the next label
+     - if there is something left, then we fix this state of the graph and return to the second step,
+     but choosing the next label
+     - if we have sorted out all objects, then we have a solution
+     - else solution is not found
+     """
     def __init__(self, board):
 
         self.board = board
