@@ -33,9 +33,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pytest lab1/zeroth.py
-          pytest lab1/first.py
-          pytest lab1/second.py
+          pytest -v lab1/tests/
           pytest -v lab2/tests/
-          pytest -v lab3/test/
+          pytest -v lab3/tests/
           pytest -v lab4/tests/
