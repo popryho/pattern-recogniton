@@ -176,5 +176,5 @@ if __name__ == '__main__':
     plt.show()
 
     # ------------------------------------------------------------------------------------
-    # visualize test set in decision region
+    # visualize tests set in decision region
     plot_decision_regions(X_train, y_train)

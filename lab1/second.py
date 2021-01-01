@@ -27,10 +27,6 @@ def solver(heatmap) -> int:
             return i
 
 
-def test_solver():
-    assert(solver([34, 138, 69, 1, 1])) == 1
-
-
 async def second():
     uri = "wss://sprs.herokuapp.com/second/popryho"
     async with websockets.connect(uri) as websocket:

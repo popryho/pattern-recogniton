@@ -29,11 +29,6 @@ def calc(data) -> int:
         print("Exception")
 
 
-def test_calc():
-    assert calc({"operands": [100, 100], "operator": "*"}) == 10000
-    assert calc({'operands': [1, 1], 'operator': "-"}) == 0
-
-
 async def zeroth():
     uri = "wss://sprs.herokuapp.com/zeroth/popryho"
     async with websockets.connect(uri) as websocket:
