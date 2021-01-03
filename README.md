@@ -9,3 +9,4 @@ Pattern recognition labs. Tasks are here:
 - Lab2: https://prnt.sc/v57yh6
 - Lab3: https://prnt.sc/vvegst
 - Lab4: https://prnt.sc/wcmdf3
+- Lab5: https://prnt.sc/wfbrn6
