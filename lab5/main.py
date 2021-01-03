@@ -82,6 +82,8 @@ def func(probabilities_of_bigrams, standard_chars, real_chars, noise, i, prev_ch
             except KeyError:
                 pass
     return max(res.values()) if mode is None else max(res, key=res.get)
+
+
 def symbol_recognition(standard_char, real_char, noise) -> float:
     """
     A function that calculates the unary constraints of a problem.
