@@ -82,4 +82,70 @@ def func(probabilities_of_bigrams, standard_chars, real_chars, noise, i, prev_ch
             except KeyError:
                 pass
     return max(res.values()) if mode is None else max(res, key=res.get)
+def symbol_recognition(standard_char, real_char, noise) -> float:
+    """
+    A function that calculates the unary constraints of a problem.
+    :param standard_char: a numeric representation of an image containing the canonical letter of the alphabet
+    :param real_char: the numerical representation of the noisy image of the letter from the incoming text.
+    :param noise: the Bernoulli distribution parameter
+    :return: q - the unary constraints of a problem | q(k)
+    """
+    q = 0
+    for i in range(len(real_char)):
+        for j in range(len(real_char[0])):
+            if noise != 1 and noise != 0:
+                q += xor(real_char[i][j], standard_char[i][j]) * log(noise) + \
+                     xor(xor(1, real_char[i][j]), standard_char[i][j]) * log(1 - noise)
+            elif noise == 1:
+                q += xor(real_char[i][j], standard_char[i][j])
+            elif noise == 0:
+                q += xor(xor(1, real_char[i][j]), standard_char[i][j])
+    return q
 
+
+def get_input_image_with_noise(path_to_input_folder, n):
+    """
+    Function for rendering incoming image.
+    :param path_to_input_folder: path to the folder containing the input files, namely images with text
+    :param n: file number in the input directory
+    :return: numerical representation of an image with text and the Bernoulli distribution parameter(noise)
+    """
+    input_phrases = listdir(path=path_to_input_folder)
+
+    filename = input_phrases[n]
+    im = Image.open(path_to_input_folder + filename)
+    input_image = array(im).astype(dtype='int64')
+    noise = get_noise(filename)
+
+    print('noise: ', noise, 'filename:', '\n'+filename)
+    im.show()
+    return input_image, noise
+
+
+if __name__ == '__main__':
+
+    from preprocessing import (
+        get_probabilities_of_bigrams,
+        get_bigram_prob,
+        get_alphabet,
+        get_frame,
+        get_noise,
+    )
+
+    frequencies_path = 'data/frequencies.json'
+    alphabet_path = 'data/alphabet/'
+    input_path = 'data/input/'
+
+    index = 19  # file number in the 'input' directory
+
+    bigrams = get_probabilities_of_bigrams(frequencies_path)
+    alphabet = get_alphabet(alphabet_path)
+    x, p = get_input_image_with_noise(input_path, index)
+
+    #  try to figure out what is shown on the image while the program compute it
+
+    start_time = datetime.now()
+    recognizer(bigrams, alphabet, x, p)
+    end_time = datetime.now()
+
+    print('\nDuration: {}'.format(end_time - start_time))
