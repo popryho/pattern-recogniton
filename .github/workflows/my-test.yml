@@ -37,3 +37,4 @@ jobs:
           pytest -v lab2/tests/
           pytest -v lab3/tests/
           pytest -v lab4/tests/
+          pytest -v lab5/tests/
