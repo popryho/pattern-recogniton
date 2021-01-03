@@ -1,7 +1,5 @@
-from operator import xor
-from math import log
 from os import listdir
-from numpy import array
+from numpy import array, log
 from PIL import Image
 from datetime import datetime
 
@@ -92,17 +90,13 @@ def symbol_recognition(standard_char, real_char, noise) -> float:
     :param noise: the Bernoulli distribution parameter
     :return: q - the unary constraints of a problem | q(k)
     """
-    q = 0
-    for i in range(len(real_char)):
-        for j in range(len(real_char[0])):
-            if noise != 1 and noise != 0:
-                q += xor(real_char[i][j], standard_char[i][j]) * log(noise) + \
-                     xor(xor(1, real_char[i][j]), standard_char[i][j]) * log(1 - noise)
-            elif noise == 1:
-                q += xor(real_char[i][j], standard_char[i][j])
-            elif noise == 0:
-                q += xor(xor(1, real_char[i][j]), standard_char[i][j])
-    return q
+    if noise != 1 and noise != 0:
+        return array(real_char != standard_char).sum() * log(noise) + \
+               array(real_char == standard_char).sum() * log(1 - noise)
+    elif noise == 1:
+        return array(real_char != standard_char).sum()
+    elif noise == 0:
+        return array(real_char == standard_char).sum()
 
 
 def get_input_image_with_noise(path_to_input_folder, n):
@@ -138,7 +132,7 @@ if __name__ == '__main__':
     alphabet_path = 'data/alphabet/'
     input_path = 'data/input/'
 
-    index = 19  # file number in the 'input' directory
+    index = 3  # file number in the 'input' directory
 
     bigrams = get_probabilities_of_bigrams(frequencies_path)
     alphabet = get_alphabet(alphabet_path)
