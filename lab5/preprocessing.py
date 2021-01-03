@@ -66,3 +66,19 @@ def get_noise(file_name) -> float:
     """
     match = search(r'[01]\.\d*', file_name[-9:-3])
     return float(match[0]) if match else 0.
+
+
+def get_frame(input_image, s):
+    """
+    You can see the noisy text on the incoming image.
+    Each letter of the text is shown on a 28 x 28 frame.
+    This function returns the numeric representation of the s-th pictured letter
+
+    :param input_image: numeric representation of an image
+    :param s: number of a frame
+    :return: the numeric representation of the s-th pictured letter in the noisy text
+    """
+    n, m = input_image.shape
+    a = m // n  # number of letters in the text
+    assert 0 <= s < a
+    return input_image[:, (a-s-1)*28:(a-s)*28]
