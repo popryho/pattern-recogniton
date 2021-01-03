@@ -1,4 +1,3 @@
-from os import listdir
 from numpy import array, log
 from PIL import Image
 from datetime import datetime
@@ -99,25 +98,6 @@ def symbol_recognition(standard_char, real_char, noise) -> float:
         return array(real_char == standard_char).sum()
 
 
-def get_input_image_with_noise(path_to_input_folder, n):
-    """
-    Function for rendering incoming image.
-    :param path_to_input_folder: path to the folder containing the input files, namely images with text
-    :param n: file number in the input directory
-    :return: numerical representation of an image with text and the Bernoulli distribution parameter(noise)
-    """
-    input_phrases = listdir(path=path_to_input_folder)
-
-    filename = input_phrases[n]
-    im = Image.open(path_to_input_folder + filename)
-    input_image = array(im).astype(dtype='int64')
-    noise = get_noise(filename)
-
-    print('noise: ', noise, 'filename:', '\n'+filename)
-    im.show()
-    return input_image, noise
-
-
 if __name__ == '__main__':
 
     from preprocessing import (
@@ -125,20 +105,20 @@ if __name__ == '__main__':
         get_bigram_prob,
         get_alphabet,
         get_frame,
-        get_noise,
     )
 
     frequencies_path = 'data/frequencies.json'
     alphabet_path = 'data/alphabet/'
-    input_path = 'data/input/'
-
-    index = 3  # file number in the 'input' directory
 
     bigrams = get_probabilities_of_bigrams(frequencies_path)
     alphabet = get_alphabet(alphabet_path)
-    x, p = get_input_image_with_noise(input_path, index)
 
-    #  try to figure out what is shown on the image while the program compute it
+    path_to_input_file = input('Enter path to the input file with the noisy text: ')
+    p = float(input('Enter the Bernoulli distribution parameter p in [0, 1]: '))
+
+    im = Image.open(path_to_input_file)
+    # im.show()  # try to figure out what is shown on the image while the program compute it
+    x = array(im).astype(dtype='int64')
 
     start_time = datetime.now()
     recognizer(bigrams, alphabet, x, p)

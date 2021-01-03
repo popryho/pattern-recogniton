@@ -58,16 +58,6 @@ def get_alphabet(path_to_alphabet) -> dict:
     return abc
 
 
-def get_noise(file_name) -> float:
-    """
-    Get noise from file_name using regular expression
-    :param file_name: file name that contains noise in the end of the name
-    :return: noise (float)
-    """
-    match = search(r'[01]\.\d*', file_name[-9:-3])
-    return float(match[0]) if match else 0.
-
-
 def get_frame(input_image, s):
     """
     You can see the noisy text on the incoming image.
