@@ -1,8 +1,6 @@
 from PIL import Image
 from os import listdir
-from re import search
-from json import load
-from pandas import DataFrame
+from pandas import read_json, concat
 from numpy import array
 
 
@@ -12,11 +10,19 @@ def get_probabilities_of_bigrams(path_to_frequencies) -> dict:
     :param path_to_frequencies: The path to json file containing frequencies.
     :return: Object with probabilities. type: dict.
     """
-    with open(path_to_frequencies) as json_file:
-        frequencies = load(json_file)
+    df = read_json(path_to_frequencies, typ='series').to_frame('frequencies').reset_index()
+    df.rename(columns={'index': 'labels'}, inplace=True)
 
-    df = DataFrame(frequencies, index=[0])
-    return (df / df.sum(axis=1)[0]).to_dict(orient='records')[0]
+    df1 = df.labels.apply(lambda x: x[0])
+    df.rename(columns={'labels': 'labels1'}, inplace=True)
+    df = concat([df, df1], axis=1)
+    agg = df.groupby(['labels']).sum()
+    df = df.join(agg, on='labels', lsuffix='_caller', rsuffix='_other')
+
+    df.frequencies_caller = df.frequencies_caller / df.frequencies_other
+    df = df.set_index('labels1')
+    df.drop(['frequencies_other', 'labels'], axis=1, inplace=True)
+    return df.to_dict()['frequencies_caller']
 
 
 def get_bigram_prob(probabilities_of_bigrams, a, b) -> float:
